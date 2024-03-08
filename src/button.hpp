@@ -11,7 +11,8 @@ namespace ShGUI {
         virtual void draw() const override;
     private:
         const char *m_text;
-        const Color m_saved_color;
+        Color m_saved_color;
+        Color m_pressed_color;
         bool m_change_color;
     };
 }
