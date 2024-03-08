@@ -9,6 +9,7 @@ namespace ShGUI {
         virtual void proccessEvents() override;
         virtual void update() override;
         virtual void draw() const override;
+
     private:
         const char *m_text;
         Color m_saved_color;

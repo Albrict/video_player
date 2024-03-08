@@ -10,7 +10,7 @@ void exitButtonCallback(void *data)
 
 int main()
 {
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_ALWAYS_RUN);
     InitWindow(1024, 768, "VideoPlayer");
     ShGUI::Button button({512, 384, 100, 100}, BLUE);
     button.setCallback(exitButtonCallback, nullptr);

@@ -15,28 +15,28 @@ namespace ShGUI {
         virtual void update() = 0;
         virtual void draw() const = 0;
           
-        Rectangle getRect() const
+        Rectangle getRect() const noexcept
         { return m_widget_rect; }
         
-        void changeRectPosition(const Rectangle &new_position)
+        void changeRectPosition(const Rectangle &new_position) noexcept
         { m_widget_rect = new_position; }
         
-        void changeRectPosition(const float x, const float y)
+        void changeRectPosition(const float x, const float y) noexcept
         { m_widget_rect.x = x; m_widget_rect.y = y; }
 
-        void changeColor(const Color color)
+        void changeColor(const Color color) noexcept
         { m_color = color; }
 
-        Color getColor() const
+        Color getColor() const noexcept
         { return m_color; }
 
-        void setCallback(callback_function *callback, void *data)
+        void setCallback(callback_function *callback, void *data) noexcept
         { m_cb = callback; m_data = data; }
 
-        void executeCallback()
+        void executeCallback() noexcept
         { assert(m_cb != nullptr); m_cb(m_data); }
 
-        bool isCallbackSet()
+        bool isCallbackSet() noexcept
         { return m_cb != nullptr; }
 
     private:
