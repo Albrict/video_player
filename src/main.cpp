@@ -1,14 +1,26 @@
 #include "raylib.h"
-#include "window.hpp"
+#include "button.hpp"
+#include <cstdlib>
+
+void exitButtonCallback(void *data)
+{
+    CloseWindow();
+    std::exit(0);
+}
 
 int main()
 {
-    VideoPlayer::Window win(640, 480, "VideoPlayer");
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(1024, 768, "VideoPlayer");
+    ShGUI::Button button({512, 384, 100, 100}, BLUE);
+    button.setCallback(exitButtonCallback, nullptr);
     SetTargetFPS(60);
     while(!WindowShouldClose()) {
+        button.proccessEvents();
+        button.update();
         BeginDrawing();
             ClearBackground(BLACK);
-            DrawText("Hello, world!", 320, 240, 28, WHITE);
+            button.draw();
         EndDrawing();
     }
     return 0;
