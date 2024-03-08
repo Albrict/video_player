@@ -1,5 +1,5 @@
 #include "helper_functions.hpp"
-#include <raylib.h>
+#include "shgui.hpp"
 #include "button.hpp"
 
 ShGUI::Button::Button(const Rectangle &rect, const Color color, const char *text)
@@ -34,5 +34,5 @@ void ShGUI::Button::update()
 
 void ShGUI::Button::draw() const
 {
-    DrawRectangleRounded(Widget::getRect(), 0.3f, 0, Widget::getColor());
+    DrawRectangleRounded(Widget::getRect(), getRoundness(), 0, Widget::getColor());
 }
