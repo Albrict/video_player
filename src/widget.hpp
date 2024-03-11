@@ -7,24 +7,27 @@ namespace ShGUI {
     public:
         typedef void(callback_function(void *data));
 
-        Widget(const Rectangle &rect, const Color color) noexcept
+        explicit Widget(const Rectangle &rect, const Color color) noexcept
             : m_widget_rect(rect), m_color(color), m_cb(nullptr), m_data(nullptr) {};
         virtual ~Widget() = default;
         
         virtual void proccessEvents() = 0;
         virtual void update() = 0;
         virtual void draw() const = 0;
-          
+        
         Rectangle getRect() const noexcept
         { return m_widget_rect; }
         
-        void changeRectPosition(const Rectangle &new_position) noexcept
-        { m_widget_rect = new_position; }
+        const Rectangle &getRectRef() const noexcept
+        { return m_widget_rect; }
+
+        void changeRect(const Rectangle &new_rect) noexcept
+        { m_widget_rect = new_rect; }
         
         void changeRectPosition(const float x, const float y) noexcept
         { m_widget_rect.x = x; m_widget_rect.y = y; }
 
-        void changeColor(const Color color) noexcept
+        void setColor(const Color color) noexcept
         { m_color = color; }
 
         Color getColor() const noexcept
