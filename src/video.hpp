@@ -1,38 +1,34 @@
 #pragma once
 #include <SDL_render.h>
 #include <sys/types.h>
+#include "codec_context.hpp"
+#include "sws_context.hpp"
+#include "frame.hpp"
 
 extern "C" {
     #include <libavcodec/avcodec.h>
-    #include <libavformat/avformat.h>
     #include <libswscale/swscale.h>
 }
+
+#include "format_context.hpp"
 
 namespace VP {
     // Video object. Throws exception on construct failure
     class Video {
     public:
-        Video(const char *path_to_file, SDL_Renderer *render);
-        ~Video();
+        Video(const char *path_to_file, Renderer &render);
+        ~Video() = default;
 
         // Get one frame from video stream.
         // If stream is ended - returns nullptr
-        SDL_Texture *getFrame();
+        Texture *getFrame();
     private:
-        const AVCodec   *m_codec            = nullptr;
-        AVCodecContext  *m_codec_ctx        = nullptr;
-        AVFormatContext *m_format_ctx       = nullptr;
-        SwsContext      *m_sws_ctx          = nullptr;
-        AVFrame         *m_frame            = nullptr;
-        AVPacket        m_packet              = {0};
-
-        SDL_Texture     *m_texture            = nullptr;
-        
-        int             m_uv_pitch            = 0;
-        int             m_video_stream         = 0;
-        Uint8           *m_y_plane            = nullptr;
-        Uint8           *m_u_plane            = nullptr;
-        Uint8           *m_v_plane            = nullptr;
-
+        AVPacket                           m_packet {};
+        FormatContext                      m_format_ctx;         
+        CodecContext                       m_video_codec_context;
+        SwsContext                         m_sws_context;
+        Frame                              m_frame;
+        Frame                              m_dest_frame;
+        int                                m_video_stream_id {};
     };
 }
