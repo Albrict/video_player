@@ -10,10 +10,11 @@ using namespace VP;
 
 FormatContext::FormatContext(const char *path)
 {
-    const char *format_ctx_alloc_error  = "avformat_alloc_context error!\n";
-    VP::check_call(avformat_open_input, &m_format_ctx, path, nullptr, nullptr); // Open video file
-    VP::check_call(avformat_find_stream_info, m_format_ctx, nullptr); // Retrieve stream information
-    m_path = path;
+    int result = avformat_open_input(&m_format_ctx, path, nullptr, nullptr); // Open video file
+    check_libav_return_value(result);
+
+    result = avformat_find_stream_info(m_format_ctx, nullptr);               // Retrieve stream information
+    check_libav_return_value(result);
 
     // Find the first video stream
     for (int i = 0; i < m_format_ctx->nb_streams; i++){
@@ -63,9 +64,4 @@ Codec FormatContext::getVideoCodec() const noexcept
 {
     AVCodecParameters *params = m_format_ctx->streams[m_video_stream]->codecpar;  // Get a pointer to the codec parameters 
     return Codec(params->codec_id);                                          // Find the decoder for the video stream
-}
-
-void FormatContext::dumpFormat() const 
-{
-    av_dump_format(m_format_ctx, 0, m_path, 0); // Dump information about file onto standard error
 }
