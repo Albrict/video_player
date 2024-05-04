@@ -25,13 +25,13 @@ CodecContext::~CodecContext()
     avcodec_free_context(&m_codec_ctx);     
 }
 
-
-void CodecContext::sendPacket(AVPacket *packet)
+void CodecContext::sendPacket(const AVPacket *packet)
 {
-    avcodec_send_packet(m_codec_ctx, packet);
+    const int result = avcodec_send_packet(m_codec_ctx, packet);
+    check_libav_return_value(result);
 }
 
-void CodecContext::receiveFrame(Frame &frame)
+int CodecContext::receiveFrame(Frame &frame)
 {
-    avcodec_receive_frame(m_codec_ctx, frame.getAVFrame());
+    return avcodec_receive_frame(m_codec_ctx, frame.getAVFrame());
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL_stdinc.h>
 #include <memory>
-#include <vector>
+#include "yuv_data.hpp"
 #include "def.hpp"
 
 extern "C" {
@@ -15,23 +15,12 @@ struct SwsContext;
 struct SDL_Rect;
 
 namespace VP {
-    class Frame {
+    class Frame final {
     public:
-        struct YuvData {
-            std::vector<Uint8> m_y_plane;
-            std::vector<Uint8> m_u_plane;
-            std::vector<Uint8> m_v_plane;
-            int                m_uv_pitch;
-
-            explicit YuvData(const size_t y_plane_size, const size_t uv_plane_size, const int uv_pitch)
-                : m_y_plane(y_plane_size),
-                m_u_plane(uv_plane_size),
-                m_v_plane(uv_plane_size),
-                m_uv_pitch(uv_pitch) {}
-            ~YuvData() = default;
-        };
 
         explicit Frame(Renderer &render, const int texture_width, const int texture_height);
+        Frame(Renderer &render, const Frame &frame);
+        Frame(Frame &&frame) noexcept;
         ~Frame();
     
         void updateYUV(const CodecContext &video_codec_context);
@@ -40,9 +29,13 @@ namespace VP {
         { return m_frame; }
         [[nodiscard]] Texture *getTexture() const noexcept
         { return m_texture.get(); }
+
+        Frame &operator=(Frame &&frame) noexcept
+        { return *this = Frame(std::move(frame)); }
+
     private: 
+        YuvData                  m_yuv_data;
         std::unique_ptr<Texture> m_texture  {};
-        std::unique_ptr<YuvData> m_yuv_data {};
         AVFrame                 *m_frame    {}; 
     };
 }

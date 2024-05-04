@@ -14,14 +14,21 @@ extern "C" {
 
 namespace VP {
     // Video object. Throws exception on construct failure
-    class Video {
+    class Video final {
     public:
-        Video(const char *path_to_file, Renderer &render);
+        explicit Video(const char *path_to_file, Renderer &render);
+        
         ~Video() = default;
-
+    
         // Get one frame from video stream.
         // If stream is ended - returns nullptr
         Texture *getFrame();
+
+        Video &operator==(Video &&other) noexcept
+        {
+            ;    
+        }
+
     private:
         AVPacket                           m_packet {};
         FormatContext                      m_format_ctx;         
@@ -29,6 +36,5 @@ namespace VP {
         SwsContext                         m_sws_context;
         Frame                              m_frame;
         Frame                              m_dest_frame;
-        int                                m_video_stream_id {};
     };
 }

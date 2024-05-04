@@ -6,11 +6,22 @@ extern "C" {
 }
 
 namespace VP {
-    class Codec {
+    class Codec final {
     public:
-        Codec(const AVCodecID id); 
+        explicit Codec(const AVCodecID id); 
+        Codec(const Codec &other);
+        Codec(Codec &&other) noexcept
+        {
+            m_codec = other.m_codec;
+            other.m_codec = nullptr;
+        }
         ~Codec() = default;
-        
+            
+        Codec &operator=(const Codec &rhs)
+        { return *this = Codec(rhs); }
+        Codec &operator=(Codec &&rhs) noexcept
+        { return *this = Codec(std::move(rhs)); }
+
         const AVCodec *getAVCodec() const noexcept
         { return m_codec; }
     private:
