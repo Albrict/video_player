@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL.h>
+#include <SDL_render.h>
 
 namespace VP {
     class Window {
@@ -10,6 +10,8 @@ namespace VP {
         
         const SDL_Surface *surface()
         { return SDL_GetWindowSurface(m_window); }
+        SDL_Window *SDLWindow()
+        { return m_window; }
      
     private:
         SDL_Window *m_window = nullptr;

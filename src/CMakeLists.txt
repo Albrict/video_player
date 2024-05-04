@@ -1,3 +1,15 @@
+
 target_sources( main PRIVATE
-    "main.cpp" "video.cpp" "window.cpp" "vp.cpp"
+    "main.cpp" 
+    "video.cpp" 
+    "window.cpp" 
+    "vp.cpp" 
+    "renderer.cpp"
+    "texture.cpp" 
+    "format_context.cpp" 
+    "frame.cpp"
+    "codec.cpp"
+    "codec_context.cpp"
+    "sws_context.cpp"
+    
     )
