@@ -8,16 +8,12 @@ extern "C" {
 namespace VP {
     class CodecContext final {
     public:
-        explicit CodecContext(Codec codec, AVCodecParameters *parameters);
+        explicit CodecContext(const Codec &codec, AVCodecParameters *parameters);
         CodecContext(CodecContext &&other) noexcept
-        {
-            m_codec_ctx       = other.m_codec_ctx; 
-            other.m_codec_ctx = nullptr;
-        }
+        { *this = std::move(other); }
         ~CodecContext();
 
-        CodecContext &operator=(CodecContext &&rhs) noexcept
-        { return *this = CodecContext(std::move(rhs)); }
+        CodecContext &operator=(CodecContext &&rhs) noexcept;
 
         [[nodiscard]] int width() const noexcept 
         { return m_codec_ctx->width; }
@@ -26,9 +22,13 @@ namespace VP {
         [[nodiscard]] AVPixelFormat pixelFormat() const noexcept 
         { return m_codec_ctx->pix_fmt; }
 
-        void sendPacket(const AVPacket *packet);
+        void sendPacket(const Packet &packet);
         int  receiveFrame(Frame &frame);
 
+        const AVCodecContext *getAVCodecContext() const noexcept
+        { return m_codec_ctx; }
+        AVCodecContext *getAVCodecContext() noexcept
+        { return m_codec_ctx; }
 
         CodecContext(const CodecContext &other) = delete;
         CodecContext &operator=(const CodecContext &rhs) = delete;

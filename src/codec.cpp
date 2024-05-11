@@ -10,8 +10,3 @@ Codec::Codec(const AVCodecID id)
     if (m_codec == nullptr)
         throw std::runtime_error(error); 
 }
-
-
-Codec::Codec(const Codec &other)
-    : m_codec(avcodec_find_decoder(other.m_codec->id))
-{}

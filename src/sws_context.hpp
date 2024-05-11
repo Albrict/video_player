@@ -13,20 +13,21 @@ namespace VP {
         explicit SwsContext(CodecContext &codec_context, const int dst_width, const int dst_height, 
                     const AVPixelFormat pixel_format, const int rescaling_flags_and_options);
         SwsContext(SwsContext &&other) noexcept
-        {
-            m_sws_context = other.m_sws_context;
-            other.m_sws_context = nullptr;
-        }
+        { *this = std::move(other); }
         ~SwsContext();
 
-        SwsContext &operator=(SwsContext &&rhs) noexcept
-        { return *this = SwsContext(std::move(rhs)); }
+        SwsContext &operator=(SwsContext &&rhs) noexcept;
 
         SwsContext(const SwsContext &other) = delete;
         SwsContext &operator=(const SwsContext &rhs) = delete;
 
         void scale(const CodecContext &video_codec_context, const Frame &source_frame, Frame &dest_frame);
+
+        [[nodiscard]] const ::SwsContext *getAVSwsContext() const noexcept
+        {  return m_sws_context; }
+        [[nodiscard]] ::SwsContext *getAVSwsContext() noexcept
+        {  return m_sws_context; }
     private:
-        ::SwsContext *m_sws_context;
+        ::SwsContext *m_sws_context {};
     };
 }

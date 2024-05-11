@@ -21,7 +21,7 @@ Video::Video(const char *path_to_file, Renderer &render)
 
 Texture *Video::getFrame()
 {
-    const auto frame_result = m_format_ctx.getVideoFrame(&m_packet);
+    const auto frame_result = m_format_ctx.getVideoFrame(m_packet);
     int receive_frame_result = 0;
     switch(frame_result) {
     using enum FormatContext::VideoFrameReturnValue;
@@ -29,16 +29,16 @@ Texture *Video::getFrame()
         return nullptr;
     case VIDEO_STREAM:
         do {
-            m_video_codec_context.sendPacket(&m_packet);
+            m_video_codec_context.sendPacket(m_packet);
             receive_frame_result = m_video_codec_context.receiveFrame(m_frame);
             m_sws_context.scale(m_video_codec_context, m_frame, m_dest_frame);
-            av_packet_unref(&m_packet);
+            m_packet.unref();
         } while (receive_frame_result == EAGAIN);
         return m_dest_frame.getTexture();
     case ERROR:
         return nullptr;
     case OTHER_STREAM:
-        av_packet_unref(&m_packet);
+        m_packet.unref();
         return m_dest_frame.getTexture();
     };
 }

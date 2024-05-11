@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]) 
 {
-	if (argc < 2) {
+    if (argc < 2) {
 		fprintf(stderr, "Usage: test <file>\n");
 		exit(1);
 	}
@@ -15,9 +15,8 @@ int main(int argc, char *argv[])
     // Init SDL
     if (!VP::init())
         exit(1);
-     
     try {
-        VP::Window window(SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, "Video player");
+        VP::Window window(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, "Video player");
         VP::Renderer render(window);
 
         VP::Video video(argv[1], render);
@@ -25,7 +24,7 @@ int main(int argc, char *argv[])
         SDL_Event event {};
         bool running = true;
         while (running) {
-            auto texture = video.getFrame();
+            const auto texture = video.getFrame();
             if (texture == nullptr) {
                 running = false;
                 break; 

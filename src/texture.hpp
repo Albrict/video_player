@@ -6,7 +6,7 @@
 namespace VP {
     class Texture final {
     public:
-        explicit Texture(Renderer &render, const Uint32 format, const int access, const int width, const int height);
+        explicit Texture(Renderer &render, const Uint32 format, const SDL_TextureAccess access, const int width, const int height);
         Texture(Renderer &render, Texture &other);
         Texture(Renderer &render, Texture *other)
         { Texture(render, *other); }

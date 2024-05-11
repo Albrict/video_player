@@ -1,6 +1,8 @@
 #include "format_context.hpp"
 #include "codec.hpp"
 #include "error.hpp"
+#include "packet.hpp"
+#include <cassert>
 
 extern "C" {
     #include <libavformat/avformat.h>
@@ -10,6 +12,7 @@ using namespace VP;
 
 FormatContext::FormatContext(const char *path)
 {
+    assert(path != nullptr && "Path is null!");
     int result = avformat_open_input(&m_format_ctx, path, nullptr, nullptr); // Open video file
     check_libav_return_value(result);
 
@@ -29,20 +32,33 @@ FormatContext::~FormatContext()
     avformat_close_input(&m_format_ctx);
 }
 
-FormatContext::VideoFrameReturnValue FormatContext::getVideoFrame(AVPacket *packet) noexcept
+FormatContext::VideoFrameReturnValue FormatContext::getVideoFrame(Packet &packet) noexcept
 {
-    int result = av_read_frame(m_format_ctx, packet);
+    int result = av_read_frame(m_format_ctx, packet.getAVPacket());
     if (result < 0) {
-        if (packet->data == nullptr)
+        if (packet.isEmpty())
             return VideoFrameReturnValue::ERROR;
         else
             return VideoFrameReturnValue::END_OF_STREAM;
     } else {
-        if (packet->stream_index == m_video_stream)
+        if (packet.getStreamIndex() == m_video_stream)
             return VideoFrameReturnValue::VIDEO_STREAM; 
         else
             return VideoFrameReturnValue::OTHER_STREAM;
     }
+}
+
+FormatContext& FormatContext::operator=(FormatContext &&rhs) noexcept
+{
+    if (this != &rhs) {
+        if (m_format_ctx != nullptr)
+            avformat_close_input(&m_format_ctx);
+        m_format_ctx         = rhs.m_format_ctx;
+        m_video_stream       = rhs.m_video_stream;
+        rhs.m_format_ctx     = nullptr;
+        rhs.m_video_stream   = -1;
+    }
+    return *this;
 }
 
 unsigned int FormatContext::nb_streams() const noexcept

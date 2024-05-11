@@ -16,11 +16,11 @@ namespace VP {
         { copy(*texture, src_rect, dst_rect); }
         void present() noexcept;
 
-        void setRenderTarget(Texture &texture) const noexcept;
-        void setRenderTarget(SDL_Texture *texture) const noexcept
+        void setRenderTarget(Texture &texture) const;
+        void setRenderTarget(SDL_Texture *texture) const 
         { SDL_SetRenderTarget(m_render, texture); }
 
-        SDL_Texture *createTexture(const Uint32 format, const int access, const int width, const int height) const noexcept
+        SDL_Texture *createTexture(const Uint32 format, const SDL_TextureAccess access, const int width, const int height) const noexcept
         { return SDL_CreateTexture(m_render, format, access, width, height); }
 
         const SDL_Texture *getCurrentRenderTarget() const noexcept
