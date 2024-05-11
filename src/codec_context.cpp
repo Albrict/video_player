@@ -2,11 +2,13 @@
 #include "codec.hpp"
 #include "error.hpp"
 #include "frame.hpp"
+#include "packet.hpp"
+#include <cassert>
 #include <stdexcept>
 
 using namespace VP;
 
-CodecContext::CodecContext(Codec codec, AVCodecParameters *parameters)
+CodecContext::CodecContext(const Codec &codec, AVCodecParameters *parameters)
 {
     const char *err_msg = "Can't allocate codec context!\n";
     m_codec_ctx = avcodec_alloc_context3(codec.getAVCodec());
@@ -25,9 +27,20 @@ CodecContext::~CodecContext()
     avcodec_free_context(&m_codec_ctx);     
 }
 
-void CodecContext::sendPacket(const AVPacket *packet)
+CodecContext& CodecContext::operator=(CodecContext &&rhs) noexcept
+{ 
+    if (this != &rhs) {
+        if (m_codec_ctx != nullptr)
+            avcodec_free_context(&m_codec_ctx); 
+        m_codec_ctx     = rhs.m_codec_ctx; 
+        rhs.m_codec_ctx = nullptr;
+    }
+    return *this;
+}
+
+void CodecContext::sendPacket(const Packet &packet)
 {
-    const int result = avcodec_send_packet(m_codec_ctx, packet);
+    const int result = avcodec_send_packet(m_codec_ctx, packet.getAVPacket());
     check_libav_return_value(result);
 }
 

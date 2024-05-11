@@ -3,7 +3,7 @@ cmake_policy(SET CMP0075 NEW)
 cmake_policy(SET CMP0091 NEW)
 project( video_player )
 
-set( CMAKE_CXX_STANDARD 17 CACHE STRING "" FORCE )
+set( CMAKE_CXX_STANDARD 20 CACHE STRING "" FORCE )
 set( CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "" FORCE )
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address,undefined")
 
@@ -21,7 +21,7 @@ endif()
 
 add_subdirectory( "src" )
 add_subdirectory( "deps" )
-
+add_subdirectory( "test" )
 if( ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" )
     target_link_options( main PRIVATE "--emrun -sASYNCIFY=1 --preload-file assets" )
     set(CMAKE_EXECUTABLE_SUFFIX .html)

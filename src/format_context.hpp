@@ -18,17 +18,11 @@ namespace VP {
         };
         explicit FormatContext(const char *path);
         FormatContext(FormatContext &&other) noexcept
-        {
-            m_format_ctx         = other.m_format_ctx;
-            m_video_stream       = other.m_video_stream;
-            other.m_format_ctx   = nullptr;
-            other.m_video_stream = -1;
-        }
+        { *this = std::move(other); }
+
         ~FormatContext();
 
-        FormatContext &operator=(FormatContext &&rhs) noexcept
-        { return *this = FormatContext(std::move(rhs)); }
-
+        FormatContext &operator=(FormatContext &&rhs) noexcept;
         [[nodiscard]] AVFormatContext* ctx() const noexcept
         { return m_format_ctx; }
 
@@ -37,7 +31,7 @@ namespace VP {
         
         [[nodiscard]] Codec getVideoCodec() const noexcept; 
         [[nodiscard]] AVCodecParameters* videoStreamCodecParams() const noexcept;
-        [[nodiscard]] VideoFrameReturnValue getVideoFrame(AVPacket *packet) noexcept;
+        [[nodiscard]] VideoFrameReturnValue getVideoFrame(Packet &packet) noexcept;
 
 
         FormatContext(const FormatContext &other) = delete;

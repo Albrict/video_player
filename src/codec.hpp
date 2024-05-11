@@ -9,18 +9,35 @@ namespace VP {
     class Codec final {
     public:
         explicit Codec(const AVCodecID id); 
-        Codec(const Codec &other);
+        Codec(const Codec &other)
+        { *this = other; }
+
         Codec(Codec &&other) noexcept
-        {
-            m_codec = other.m_codec;
-            other.m_codec = nullptr;
-        }
+        { *this = std::move(other); }
+
         ~Codec() = default;
             
         Codec &operator=(const Codec &rhs)
-        { return *this = Codec(rhs); }
+        { 
+            if (this != &rhs)
+                this->m_codec = avcodec_find_decoder(rhs.m_codec->id);
+            return *this;
+        }
+
         Codec &operator=(Codec &&rhs) noexcept
-        { return *this = Codec(std::move(rhs)); }
+        { 
+            this->m_codec = rhs.m_codec;
+            rhs.m_codec   = nullptr;
+            return *this;
+        }
+       
+        friend constexpr bool operator==(const Codec &lhs, const Codec &rhs)
+        {
+            if (lhs.m_codec->id == rhs.m_codec->id)
+                return true;
+            else
+                return false;
+        }
 
         const AVCodec *getAVCodec() const noexcept
         { return m_codec; }

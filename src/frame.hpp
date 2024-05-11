@@ -19,8 +19,8 @@ namespace VP {
     public:
 
         explicit Frame(Renderer &render, const int texture_width, const int texture_height);
-        Frame(Renderer &render, const Frame &frame);
-        Frame(Frame &&frame) noexcept;
+        Frame(Frame &&other) noexcept;
+
         ~Frame();
     
         void updateYUV(const CodecContext &video_codec_context);
@@ -30,9 +30,7 @@ namespace VP {
         [[nodiscard]] Texture *getTexture() const noexcept
         { return m_texture.get(); }
 
-        Frame &operator=(Frame &&frame) noexcept
-        { return *this = Frame(std::move(frame)); }
-
+        Frame &operator=(Frame &&rhs) noexcept;
     private: 
         YuvData                  m_yuv_data;
         std::unique_ptr<Texture> m_texture  {};

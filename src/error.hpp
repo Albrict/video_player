@@ -17,9 +17,15 @@ namespace VP {
         if (result < 0) {
             int err = av_strerror(result, string.data(), 128);
             if (err < 0) 
-                std::cerr << enum_not_found; 
+                std::cerr << enum_not_found << '\n';
             else
                 throw std::runtime_error(string);
         }
+    }
+
+    inline void check_sdl_return_value(const int result)
+    {
+        if (result < 0)
+            throw std::runtime_error(SDL_GetError());
     }
 }
