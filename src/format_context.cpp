@@ -20,10 +20,11 @@ FormatContext::FormatContext(const char *path)
     check_libav_return_value(result);
 
     // Find the first video stream
-    for (int i = 0; i < m_format_ctx->nb_streams; i++){
-        if (m_format_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+    for (size_t i = 0; i < m_format_ctx->nb_streams; i++){
+        if (m_format_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && m_video_stream < 0)
             m_video_stream = i;
-        }
+        if (m_format_ctx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && m_audio_stream < 0)
+            m_audio_stream = i;
     }
 }
 
@@ -43,6 +44,8 @@ FormatContext::VideoFrameReturnValue FormatContext::getVideoFrame(Packet &packet
     } else {
         if (packet.getStreamIndex() == m_video_stream)
             return VideoFrameReturnValue::VIDEO_STREAM; 
+        else if (packet.getStreamIndex() == m_audio_stream)
+            return VideoFrameReturnValue::AUDIO_STREAM;
         else
             return VideoFrameReturnValue::OTHER_STREAM;
     }
@@ -76,8 +79,20 @@ AVCodecParameters* FormatContext::videoStreamCodecParams() const noexcept
     return m_format_ctx->streams[m_video_stream]->codecpar;
 }
 
-Codec FormatContext::getVideoCodec() const noexcept
+AVCodecParameters* FormatContext::audioStreamCodecParams() const noexcept
+{
+    return m_format_ctx->streams[m_audio_stream]->codecpar;
+}
+
+Codec FormatContext::getVideoCodec() const
 {
     AVCodecParameters *params = m_format_ctx->streams[m_video_stream]->codecpar;  // Get a pointer to the codec parameters 
     return Codec(params->codec_id);                                          // Find the decoder for the video stream
 }
+
+Codec FormatContext::getAudioCodec() const
+{
+    AVCodecParameters *params = m_format_ctx->streams[m_audio_stream]->codecpar;
+    return Codec(params->codec_id);
+}
+

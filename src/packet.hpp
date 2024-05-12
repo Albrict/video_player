@@ -1,8 +1,7 @@
 #pragma once
-
 #include <utility>
-struct AVPacket;
 
+struct AVPacket;
 namespace VP {
     class Packet final {
     public:
@@ -21,6 +20,7 @@ namespace VP {
          
         [[nodiscard]] bool isEmpty() const noexcept;
         [[nodiscard]] int getStreamIndex() const noexcept;
+        [[nodiscard]] int getSize() const noexcept;
         [[nodiscard]] const AVPacket *getAVPacket() const noexcept 
         { return m_packet; }
 

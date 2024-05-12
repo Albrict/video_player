@@ -30,6 +30,8 @@ add_executable(
     ../src/sws_context.cpp 
     ../src/codec_context.cpp 
     ../src/format_context.cpp 
+    ../src/swr_context.cpp
+    ../src/audio_device.cpp
 )
 
 target_link_libraries(
@@ -43,6 +45,7 @@ target_link_libraries( vp_test avfilter)
 target_link_libraries( vp_test avformat)
 target_link_libraries( vp_test avcodec)
 target_link_libraries( vp_test swscale)
+target_link_libraries( vp_test swresample)
 target_link_libraries( vp_test avutil)
 
 include(GoogleTest)

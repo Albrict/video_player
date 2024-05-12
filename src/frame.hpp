@@ -6,9 +6,9 @@
 
 extern "C" {
     #include <libavutil/mem.h>
+    #include <libavutil/frame.h>
 }
 
-struct AVFrame;
 struct AVCodecContext;
 struct AVPacket;
 struct SwsContext;
@@ -29,7 +29,16 @@ namespace VP {
         { return m_frame; }
         [[nodiscard]] Texture *getTexture() const noexcept
         { return m_texture.get(); }
-
+        
+        [[nodiscard]] int getChannels() const noexcept 
+        { return m_frame->ch_layout.nb_channels; }
+        [[nodiscard]] int getSampleRate() const noexcept
+        { return m_frame->sample_rate; }
+        [[nodiscard]] int getNumberOfSamples() const noexcept
+        { return m_frame->nb_samples; }
+        [[nodiscard]] uint8_t **getFrameData() const noexcept
+        { return m_frame->data; }
+        
         Frame &operator=(Frame &&rhs) noexcept;
     private: 
         YuvData                  m_yuv_data;

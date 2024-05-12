@@ -2,6 +2,7 @@
 #include "def.hpp"
 
 extern "C" {
+    #include <libavutil/channel_layout.h>
     #include <libavcodec/avcodec.h>
 }
 
@@ -21,6 +22,15 @@ namespace VP {
         { return m_codec_ctx->height; }
         [[nodiscard]] AVPixelFormat pixelFormat() const noexcept 
         { return m_codec_ctx->pix_fmt; }
+        
+        [[nodiscard]] int sampleRate() const noexcept
+        { return m_codec_ctx->sample_rate; }
+        [[nodiscard]] int channels() const noexcept
+        { return m_codec_ctx->ch_layout.nb_channels; }
+        [[nodiscard]] AVChannelLayout channelLayout() const noexcept
+        { return m_codec_ctx->ch_layout; }
+        [[nodiscard]] AVSampleFormat sampleFormat() const noexcept
+        { return m_codec_ctx->sample_fmt; }
 
         void sendPacket(const Packet &packet);
         int  receiveFrame(Frame &frame);

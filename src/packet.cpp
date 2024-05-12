@@ -27,6 +27,11 @@ int Packet::getStreamIndex() const noexcept
     return m_packet->stream_index;
 }
 
+int Packet::getSize() const noexcept
+{
+    return m_packet->size;
+}
+
 void Packet::unref() noexcept 
 {
     av_packet_unref(m_packet);
