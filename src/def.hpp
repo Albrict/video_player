@@ -10,4 +10,5 @@ namespace VP {
     class CodecContext;
     class SwsContext;
     class Packet;
+    class SwrContext;
 }

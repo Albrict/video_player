@@ -22,11 +22,10 @@ int main(int argc, char *argv[])
         VP::Video video(argv[1], render);
 
         SDL_Event event {};
-        bool running = true;
-        while (running) {
+        while (VP::isRunning()) {
             const auto texture = video.getFrame();
             if (texture == nullptr) {
-                running = false;
+                VP::stopRunning();
                 break; 
             }
             render.clear();
@@ -36,7 +35,7 @@ int main(int argc, char *argv[])
             SDL_PollEvent(&event);
             switch (event.type) {
             case SDL_QUIT:
-                running = false;
+                VP::stopRunning();
                 break;
             default:
                 break;

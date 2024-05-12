@@ -57,4 +57,3 @@ void Frame::updateYUV(const CodecContext &video_codec_context)
     m_texture->updateYUV(nullptr, m_yuv_data.m_y_plane.data(), video_codec_context.width(), 
             m_yuv_data.m_u_plane.data(), m_yuv_data.m_uv_pitch, m_yuv_data.m_v_plane.data(), m_yuv_data.m_uv_pitch); 
 }
-
