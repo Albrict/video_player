@@ -39,7 +39,7 @@ target_link_libraries(
     GTest::gtest_main
 )
 
-target_link_libraries( vp_test SDL2::SDL2main SDL2::SDL2-static )
+target_link_libraries( vp_test SDL2::SDL2-static )
 target_link_libraries( vp_test avdevice)
 target_link_libraries( vp_test avfilter)
 target_link_libraries( vp_test avformat)
