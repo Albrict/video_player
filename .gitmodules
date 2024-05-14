@@ -1,0 +1,12 @@
+[submodule "external/sdl"]
+	path = external/sdl
+    url = https://github.com/libsdl-org/SDL.git
+    branch = release-2.30.3
+[submodule "external/sdl-ttf"]
+	path = external/sdl-ttf
+    url = https://github.com/libsdl-org/SDL_ttf.git
+    branch = release-2.22.0
+[submodule "external/sdl-image"]
+	path = external/sdl-image
+    url = https://github.com/libsdl-org/SDL_image.git
+    branch = release-2.8.2
