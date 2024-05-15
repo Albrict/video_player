@@ -24,14 +24,14 @@ add_executable(
     ../src/renderer.cpp
     ../src/video.cpp
     ../src/codec.cpp 
-    ../src/frame.cpp 
     ../src/packet.cpp 
     ../src/texture.cpp 
     ../src/sws_context.cpp 
     ../src/codec_context.cpp 
     ../src/format_context.cpp 
     ../src/swr_context.cpp
-    ../src/audio_device.cpp
+    ../src/video_frame_handler.cpp
+    ../src/audio_frame_handler.cpp
 )
 
 target_link_libraries(

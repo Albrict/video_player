@@ -11,4 +11,9 @@ namespace VP {
     class SwsContext;
     class Packet;
     class SwrContext;
+    class VideoCodec;
+    class AudioCodec;
+    class VideoFrame;
+    class AudioFrame;
+    struct YuvData;
 }

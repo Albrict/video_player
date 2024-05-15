@@ -1,12 +1,15 @@
 #include "texture.hpp"
 #include "error.hpp"
 #include "renderer.hpp"
+#include "yuv_data.hpp"
 #include <cassert>
 #include <stdexcept>
 
 using namespace VP;
 
 Texture::Texture(Renderer &render, const Uint32 format, const SDL_TextureAccess access, const int w, const int h)
+    :  m_width(w),
+    m_height(h)
 { 
     assert(w > 0 && h > 0 && "Width or height are invalid!");
     m_texture = render.createTexture(format, access, w, h); 
@@ -52,6 +55,20 @@ void Texture::updateYUV(const SDL_Rect *rect, const Uint8 *y_plane, const int y_
 {
     assert(y_plane != nullptr && u_plane != nullptr && v_plane != nullptr && "Planes are nullptr!");
     assert(y_pitch > 0 && u_pitch > 0 && v_pitch > 0 && "Pitches are negative!");
+
+    const int result = SDL_UpdateYUVTexture(m_texture, rect, y_plane, y_pitch, u_plane, u_pitch, v_plane, v_pitch);
+    check_sdl_return_value(result);
+}
+
+void Texture::updateYUV(const SDL_Rect *rect, const YuvData &yuv_data)
+{
+    const auto y_plane = yuv_data.m_y_plane.data();
+    const auto u_plane = yuv_data.m_u_plane.data();
+    const auto v_plane = yuv_data.m_v_plane.data();
+
+    const auto y_pitch = yuv_data.m_y_pitch;
+    const auto u_pitch = yuv_data.m_u_pitch;
+    const auto v_pitch = yuv_data.m_v_pitch;
 
     const int result = SDL_UpdateYUVTexture(m_texture, rect, y_plane, y_pitch, u_plane, u_pitch, v_plane, v_pitch);
     check_sdl_return_value(result);

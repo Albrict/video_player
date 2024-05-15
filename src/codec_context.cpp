@@ -6,7 +6,7 @@
 #include <cassert>
 #include <stdexcept>
 
-using namespace VP;
+using VP::CodecContext;
 
 CodecContext::CodecContext(const Codec &codec, AVCodecParameters *parameters)
 {
@@ -27,7 +27,7 @@ CodecContext::~CodecContext()
     avcodec_free_context(&m_codec_ctx);     
 }
 
-CodecContext& CodecContext::operator=(CodecContext &&rhs) noexcept
+CodecContext& CodecContext::operator=(CodecContext &&rhs) noexcept 
 { 
     if (this != &rhs) {
         if (m_codec_ctx != nullptr)
@@ -42,6 +42,11 @@ void CodecContext::sendPacket(const Packet &packet)
 {
     const int result = avcodec_send_packet(m_codec_ctx, packet.getAVPacket());
     check_libav_return_value(result);
+}
+
+void CodecContext::flushBuffers() 
+{
+    avcodec_flush_buffers(m_codec_ctx);    
 }
 
 int CodecContext::receiveFrame(Frame &frame)

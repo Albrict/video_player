@@ -30,7 +30,7 @@ namespace VP {
         
         void updateYUV(const SDL_Rect *rect, const Uint8 *y_plane, const int y_pitch, 
                         const Uint8* u_plane, const int u_pitch, const Uint8 *v_plane, const int v_pitch);;
-
+        void updateYUV(const SDL_Rect *rect, const YuvData &data);
         [[nodiscard]] int getWidth() const noexcept
         { return m_width; }
         [[nodiscard]] int getHeight() const noexcept
