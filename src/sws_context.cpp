@@ -1,6 +1,6 @@
 #include "sws_context.hpp"
-#include "frame.hpp"
-#include "codec_context.hpp"
+#include "video_frame.hpp"
+#include "video_codec.hpp"
 #include <cassert>
 #include <stdexcept>
 
@@ -10,7 +10,7 @@ extern "C" {
 
 using VP::Frame;
 
-VP::SwsContext::SwsContext(CodecContext &codec_context, const int dst_width, const int dst_height, 
+VP::SwsContext::SwsContext(VideoCodec &codec_context, const int dst_width, const int dst_height, 
             const AVPixelFormat pixel_format, const int rescaling_flags_and_options)
 {
     assert(dst_width > 0 && dst_height > 0 && "Width or height are invalid!");
@@ -41,13 +41,13 @@ VP::SwsContext& VP::SwsContext::operator=(SwsContext &&rhs) noexcept
     return *this;
 }
 
-void VP::SwsContext::scale(const VP::CodecContext &video_codec_context, const Frame &source_frame, Frame &dest_frame)
+void VP::SwsContext::scale(const VP::VideoCodec &video_codec, const VideoFrame &source_frame, VideoFrame &dest_frame)
 {
     const AVFrame *source_avframe = source_frame.getAVFrame();
     AVFrame       *dest_avframe   = dest_frame.getAVFrame();
-
+    
     if (source_avframe->data[0]) {
-        sws_scale(m_sws_context, source_avframe->data, source_avframe->linesize, 0, video_codec_context.height(), dest_avframe->data, dest_avframe->linesize);
-        dest_frame.updateYUV(video_codec_context);
+        sws_scale(m_sws_context, source_avframe->data, source_avframe->linesize, 0, video_codec.height(), dest_avframe->data, dest_avframe->linesize);
+        dest_frame.updateYUV();
     }
 }

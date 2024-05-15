@@ -33,21 +33,21 @@ FormatContext::~FormatContext()
     avformat_close_input(&m_format_ctx);
 }
 
-FormatContext::VideoFrameReturnValue FormatContext::getVideoFrame(Packet &packet) noexcept
+FormatContext::FrameType FormatContext::readFrame(Packet &packet) noexcept
 {
     int result = av_read_frame(m_format_ctx, packet.getAVPacket());
     if (result < 0) {
         if (packet.isEmpty())
-            return VideoFrameReturnValue::ERROR;
+            return FrameType::ERROR;
         else
-            return VideoFrameReturnValue::END_OF_STREAM;
+            return FrameType::END_OF_STREAM;
     } else {
         if (packet.getStreamIndex() == m_video_stream)
-            return VideoFrameReturnValue::VIDEO_STREAM; 
+            return FrameType::VIDEO_STREAM; 
         else if (packet.getStreamIndex() == m_audio_stream)
-            return VideoFrameReturnValue::AUDIO_STREAM;
+            return FrameType::AUDIO_STREAM;
         else
-            return VideoFrameReturnValue::OTHER_STREAM;
+            return FrameType::OTHER_STREAM;
     }
 }
 

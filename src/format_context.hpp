@@ -10,7 +10,7 @@ struct AVPacket;
 namespace VP {
     class FormatContext final {
     public:
-        enum class VideoFrameReturnValue {
+        enum class FrameType {
             END_OF_STREAM,
             VIDEO_STREAM,
             AUDIO_STREAM,
@@ -34,7 +34,7 @@ namespace VP {
         [[nodiscard]] Codec getAudioCodec() const;
         [[nodiscard]] AVCodecParameters* videoStreamCodecParams() const noexcept;
         [[nodiscard]] AVCodecParameters* audioStreamCodecParams() const noexcept;
-        [[nodiscard]] VideoFrameReturnValue getVideoFrame(Packet &packet) noexcept;
+        [[nodiscard]] FrameType readFrame(Packet &packet) noexcept;
     
 
         FormatContext(const FormatContext &other) = delete;

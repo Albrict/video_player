@@ -41,6 +41,9 @@ namespace VP {
 
         const AVCodec *getAVCodec() const noexcept
         { return m_codec; }
+        
+        AVCodecContext *allocateAVCodecContext() const noexcept
+        { return avcodec_alloc_context3(m_codec); }
     private:
         const AVCodec *m_codec {};
     };

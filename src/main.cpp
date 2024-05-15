@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL.h>
+#include "format_context.hpp"
 #include "vp.hpp"
 #include "renderer.hpp"
 #include "window.hpp"
@@ -23,14 +24,23 @@ int main(int argc, char *argv[])
 
         SDL_Event event {};
         while (VP::isRunning()) {
-            const auto texture = video.getFrame();
-            if (texture == nullptr) {
+            const auto type = video.readFrame(); 
+            switch(type) {
+            using enum VP::FormatContext::FrameType;
+            case VIDEO_STREAM:
+                render.clear();
+                video.renderFrame(render);
+                render.present();
+                break;
+            case AUDIO_STREAM:
+                video.playFrame();
+                break;
+            case END_OF_STREAM:
                 VP::stopRunning();
-                break; 
+                break;
+            default:
+                break;
             }
-            render.clear();
-            render.copy(texture);
-            render.present();
 
             SDL_PollEvent(&event);
             switch (event.type) {

@@ -7,11 +7,11 @@ target_sources( main PRIVATE
     "renderer.cpp"
     "texture.cpp" 
     "format_context.cpp" 
-    "frame.cpp"
     "codec.cpp"
     "codec_context.cpp"
     "sws_context.cpp"
     "packet.cpp"
     "swr_context.cpp"
-    "audio_device.cpp"
+    "audio_frame_handler.cpp"
+    "video_frame_handler.cpp"
     )

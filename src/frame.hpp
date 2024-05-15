@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL_stdinc.h>
-#include <memory>
-#include "yuv_data.hpp"
+#include <stdexcept>
 #include "def.hpp"
 
 extern "C" {
@@ -9,40 +8,37 @@ extern "C" {
     #include <libavutil/frame.h>
 }
 
-struct AVCodecContext;
-struct AVPacket;
-struct SwsContext;
-struct SDL_Rect;
-
 namespace VP {
-    class Frame final {
+    class Frame {
     public:
+        explicit Frame()
+        {
+            const char *frame_allocation_error  = "av_frame_alloc error!\n";
+            m_frame = av_frame_alloc();
+            if (!m_frame)
+                throw std::runtime_error(frame_allocation_error);
+        }
+        Frame(Frame &&other) noexcept 
+        { *this = std::move(other); }
 
-        explicit Frame(Renderer &render, const int texture_width, const int texture_height);
-        Frame(Frame &&other) noexcept;
+        virtual ~Frame() 
+        { av_frame_free(&m_frame); }
 
-        ~Frame();
-    
-        void updateYUV(const CodecContext &video_codec_context);
-        void scaleInto(Frame &dest, SwsContext &context, const int width, const int height);
-        [[nodiscard]] AVFrame *getAVFrame() const noexcept
+        Frame &operator=(Frame &&rhs) noexcept 
+        {
+            if (this != &rhs) {
+                m_frame   = rhs.m_frame;
+                rhs.m_frame = nullptr;
+            }
+            return *this;
+        }
+
+        [[nodiscard]] virtual AVFrame *getAVFrame() const noexcept final 
         { return m_frame; }
-        [[nodiscard]] Texture *getTexture() const noexcept
-        { return m_texture.get(); }
         
-        [[nodiscard]] int getChannels() const noexcept 
-        { return m_frame->ch_layout.nb_channels; }
-        [[nodiscard]] int getSampleRate() const noexcept
-        { return m_frame->sample_rate; }
-        [[nodiscard]] int getNumberOfSamples() const noexcept
-        { return m_frame->nb_samples; }
-        [[nodiscard]] uint8_t **getFrameData() const noexcept
+        [[nodiscard]] virtual uint8_t **getFrameData() const noexcept final 
         { return m_frame->data; }
-        
-        Frame &operator=(Frame &&rhs) noexcept;
-    private: 
-        YuvData                  m_yuv_data;
-        std::unique_ptr<Texture> m_texture  {};
-        AVFrame                 *m_frame    {}; 
+    protected: 
+        AVFrame *m_frame {}; 
     };
 }

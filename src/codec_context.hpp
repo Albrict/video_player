@@ -1,48 +1,32 @@
 #pragma once
 #include "def.hpp"
+#include <utility>
 
-extern "C" {
-    #include <libavutil/channel_layout.h>
-    #include <libavcodec/avcodec.h>
-}
+struct AVCodecContext;
+struct AVCodecParameters;
 
 namespace VP {
-    class CodecContext final {
+    class CodecContext {
     public:
         explicit CodecContext(const Codec &codec, AVCodecParameters *parameters);
         CodecContext(CodecContext &&other) noexcept
         { *this = std::move(other); }
-        ~CodecContext();
-
+        virtual ~CodecContext();
+        
         CodecContext &operator=(CodecContext &&rhs) noexcept;
 
-        [[nodiscard]] int width() const noexcept 
-        { return m_codec_ctx->width; }
-        [[nodiscard]] int height() const noexcept 
-        { return m_codec_ctx->height; }
-        [[nodiscard]] AVPixelFormat pixelFormat() const noexcept 
-        { return m_codec_ctx->pix_fmt; }
-        
-        [[nodiscard]] int sampleRate() const noexcept
-        { return m_codec_ctx->sample_rate; }
-        [[nodiscard]] int channels() const noexcept
-        { return m_codec_ctx->ch_layout.nb_channels; }
-        [[nodiscard]] AVChannelLayout channelLayout() const noexcept
-        { return m_codec_ctx->ch_layout; }
-        [[nodiscard]] AVSampleFormat sampleFormat() const noexcept
-        { return m_codec_ctx->sample_fmt; }
+        virtual void sendPacket(const Packet &packet) final;
+        virtual void flushBuffers() final;
+        virtual int receiveFrame(Frame &frame) final;
 
-        void sendPacket(const Packet &packet);
-        int  receiveFrame(Frame &frame);
-
-        const AVCodecContext *getAVCodecContext() const noexcept
+        [[nodiscard]] virtual const AVCodecContext *getAVCodecContext() const noexcept final
         { return m_codec_ctx; }
-        AVCodecContext *getAVCodecContext() noexcept
+        [[nodiscard]] virtual AVCodecContext *getAVCodecContext() noexcept final
         { return m_codec_ctx; }
 
         CodecContext(const CodecContext &other) = delete;
         CodecContext &operator=(const CodecContext &rhs) = delete;
-    private:
+    protected:
         AVCodecContext *m_codec_ctx {};
     };
 }

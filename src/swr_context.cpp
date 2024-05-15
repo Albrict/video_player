@@ -1,8 +1,7 @@
 #include "swr_context.hpp"
-#include "codec_context.hpp"
 #include "error.hpp"
 
-VP::SwrContext::SwrContext(const CodecContext &codec_context, const AVSampleFormat format, 
+VP::SwrContext::SwrContext(const AudioCodec &codec_context, const AVSampleFormat format, 
            const int out_sample_rate, const int log_offset, void *log_ctx)
 {
     auto channel_layout = codec_context.channelLayout();

@@ -1,6 +1,7 @@
 #pragma once
 #include "error.hpp"
-#include "frame.hpp"
+#include "audio_frame.hpp"
+#include "audio_codec.hpp"
 
 extern "C" {
     #include <libswresample/swresample.h>
@@ -10,11 +11,11 @@ struct SwrContext;
 namespace VP {
     class SwrContext final {
     public:
-        SwrContext(const CodecContext &codec_context, const AVSampleFormat format, 
+        SwrContext(const AudioCodec &codec_context, const AVSampleFormat format, 
                    const int out_sample_rate, const int log_offset = 0, void *log_ctx = nullptr);
         ~SwrContext();
         
-        [[nodiscard]] int getDelay(const Frame &frame) const noexcept
+        [[nodiscard]] int getDelay(const AudioFrame &frame) const noexcept
         { return swr_get_delay(m_swr_context, frame.getSampleRate()); }
 
         int convert(uint8_t **out, const int out_count, const uint8_t **in, const int in_count) const noexcept
