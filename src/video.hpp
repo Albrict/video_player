@@ -1,7 +1,9 @@
 #pragma once
-#include "packet.hpp"
+#include "renderer.hpp"
 #include "video_frame_handler.hpp"
 #include "audio_frame_handler.hpp"
+#include "packet.hpp"
+#include <queue>
 
 extern "C" {
     #include <libavcodec/avcodec.h>
@@ -14,25 +16,9 @@ namespace VP {
     // Video object. Throws exception on construct failure
     class Video final {
     public:
-        explicit Video(const char *path_to_file, Renderer &render);
+        explicit Video(const char *path_to_file, Window &window);
         ~Video() = default;
-        
-        [[nodiscard]] FormatContext::FrameType readFrame();
-        void renderFrame(Renderer &render);
-        void playFrame();
-
-        void play(Renderer &render);
-        void pause();
-        void unpause();
-
-        Video &operator=(Video &&rhs) noexcept
-        { 
-            if (this != &rhs) {
-                m_packet              = std::move(rhs.m_packet);
-                m_format_ctx          = std::move(rhs.m_format_ctx);
-            }
-            return *this;
-        }
+        void play();
 
         const FormatContext &getFormatContext() const noexcept
         { return m_format_ctx; }
@@ -43,10 +29,11 @@ namespace VP {
         void renderFrame();
         void playSamples();
     private:
-        FormatContext     m_format_ctx;         
-        VideoFrameHandler m_video_frame_handler;
-        AudioFrameHandler m_audio_frame_handler; 
-        Packet            m_packet;
-        bool              m_is_playing {true};
+        FormatContext      m_format_ctx;         
+        Renderer           m_render;
+        VideoFrameHandler  m_video_frame_handler;
+        AudioFrameHandler  m_audio_frame_handler; 
+        std::queue<Packet> m_video_queue;
+        bool               m_is_playing;
     };
 }

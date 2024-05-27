@@ -1,4 +1,5 @@
 #include "video.hpp"
+#include "packet.hpp"
 #include "renderer.hpp"
 #include "format_context.hpp"
 #include "vp.hpp"
@@ -7,37 +8,52 @@
 #include <libavutil/channel_layout.h>
 #include <libavutil/opt.h>
 #include <libswresample/swresample.h>
+#include <SDL_events.h>
 
 extern "C" {
     #include <libavformat/avformat.h>
 }
 
 using VP::Video;
-using VP::FormatContext;
 
-Video::Video(const char *path_to_file, Renderer &render)
+Video::Video(const char *path_to_file, Window &window)
     : m_format_ctx(path_to_file),
-    m_video_frame_handler(render, m_format_ctx),
+    m_render(window),
+    m_video_frame_handler(m_render, m_format_ctx),
     m_audio_frame_handler(m_format_ctx),
-    m_packet()
+    m_video_queue(),
+    m_is_playing(true)
 {}
 
-[[nodiscard]] FormatContext::FrameType Video::readFrame()
+void Video::play()
 {
-    const auto type = m_format_ctx.readFrame(m_packet);
-    if (type == FormatContext::FrameType::OTHER_STREAM)
-        m_packet.unref();
-    return type;
-}
+    Packet packet;
+    bool running = true;
+    while (running) {
+        SDL_Event event {};
+        SDL_PollEvent(&event);
+        if (event.type == SDL_QUIT)
+            running = false;
 
-void Video::renderFrame(Renderer &render)
-{
-    m_video_frame_handler.renderFrame(render, m_packet);
-    m_packet.unref();
-}
-
-void Video::playFrame()
-{
-    m_audio_frame_handler.playFrame(m_packet);
-    m_packet.unref();
+        const auto type = m_format_ctx.readFrame(packet);
+        switch(type) {
+        using enum FormatContext::FrameType;
+        case VIDEO_STREAM:   
+            m_video_queue.push(packet);
+            packet.unref();
+            break;
+        case AUDIO_STREAM:
+            m_audio_frame_handler.playFrame(packet);
+            packet.unref();
+            break;
+        case ERROR:
+            break;
+        case OTHER_STREAM:
+            packet.unref();
+            break;
+        case END_OF_STREAM:
+            running = false;
+            break;
+        }
+    }
 }

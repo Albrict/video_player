@@ -35,7 +35,7 @@ FormatContext::~FormatContext()
 
 FormatContext::FrameType FormatContext::readFrame(Packet &packet) noexcept
 {
-    int result = av_read_frame(m_format_ctx, packet.getAVPacket());
+    int result = av_read_frame(m_format_ctx, &packet.getAVPacket());
     if (result < 0) {
         if (packet.isEmpty())
             return FrameType::ERROR;

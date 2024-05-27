@@ -24,7 +24,6 @@ add_executable(
     ../src/renderer.cpp
     ../src/video.cpp
     ../src/codec.cpp 
-    ../src/packet.cpp 
     ../src/texture.cpp 
     ../src/sws_context.cpp 
     ../src/codec_context.cpp 
