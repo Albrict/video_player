@@ -16,7 +16,7 @@ namespace VP {
         
         CodecContext &operator=(CodecContext &&rhs) noexcept;
 
-        virtual void sendPacket(const Packet &packet) final;
+        virtual int  sendPacket(const Packet &packet) final;
         virtual void flushBuffers() final;
         virtual int receiveFrame(Frame &frame) final;
 

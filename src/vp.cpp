@@ -27,6 +27,11 @@ bool VP::isRunning() noexcept
     return running;
 }
 
+void VP::stopRunning() noexcept
+{
+    running = false;
+}
+
 void VP::close()
 {
     SDL_Quit();

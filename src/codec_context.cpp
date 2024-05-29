@@ -38,10 +38,9 @@ CodecContext& CodecContext::operator=(CodecContext &&rhs) noexcept
     return *this;
 }
 
-void CodecContext::sendPacket(const Packet &packet)
+int CodecContext::sendPacket(const Packet &packet)
 {
-    const int result = avcodec_send_packet(m_codec_ctx, &packet.getAVPacket());
-    check_libav_return_value(result);
+    return avcodec_send_packet(m_codec_ctx, &packet.getAVPacket());
 }
 
 void CodecContext::flushBuffers() 
