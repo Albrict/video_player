@@ -10,8 +10,8 @@ target_sources( main PRIVATE
     "codec.cpp"
     "codec_context.cpp"
     "sws_context.cpp"
-    "packet.cpp"
     "swr_context.cpp"
     "audio_frame_handler.cpp"
     "video_frame_handler.cpp"
+    "packet_queue.cpp"
     )

@@ -7,6 +7,10 @@ struct AVStream;
 struct AVCodecParameters;
 struct AVPacket;
 
+extern "C" {
+    #include <libavutil/rational.h>
+}
+
 namespace VP {
     class FormatContext final {
     public:
@@ -35,7 +39,9 @@ namespace VP {
         [[nodiscard]] AVCodecParameters* videoStreamCodecParams() const noexcept;
         [[nodiscard]] AVCodecParameters* audioStreamCodecParams() const noexcept;
         [[nodiscard]] FrameType readFrame(Packet &packet) noexcept;
-    
+        [[nodiscard]] AVRational getAverageFrameRate() const noexcept; 
+        [[nodiscard]] AVRational getVideoTimebase() const noexcept;  
+        [[nodiscard]] AVRational getAudioTimebase() const noexcept;
 
         FormatContext(const FormatContext &other) = delete;
         FormatContext &operator=(const FormatContext &rhs) = delete;

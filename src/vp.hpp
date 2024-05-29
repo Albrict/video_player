@@ -4,4 +4,5 @@ namespace VP {
     [[nodiscard]] bool init() noexcept;
     [[nodiscard]] bool isRunning() noexcept;
     void stopRunning() noexcept;
+    void close();
 }

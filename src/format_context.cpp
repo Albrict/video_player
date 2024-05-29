@@ -35,7 +35,7 @@ FormatContext::~FormatContext()
 
 FormatContext::FrameType FormatContext::readFrame(Packet &packet) noexcept
 {
-    int result = av_read_frame(m_format_ctx, packet.getAVPacket());
+    int result = av_read_frame(m_format_ctx, &packet.getAVPacket());
     if (result < 0) {
         if (packet.isEmpty())
             return FrameType::ERROR;
@@ -96,3 +96,26 @@ Codec FormatContext::getAudioCodec() const
     return Codec(params->codec_id);
 }
 
+[[nodiscard]] AVRational FormatContext::getAverageFrameRate() const noexcept
+{
+    if (m_video_stream >= 0)
+        return m_format_ctx->streams[m_video_stream]->avg_frame_rate;
+    else
+        return {};
+}
+
+[[nodiscard]] AVRational FormatContext::getVideoTimebase() const noexcept
+{
+    if (m_video_stream >= 0)
+        return m_format_ctx->streams[m_video_stream]->time_base;
+    else
+        return {};
+}
+
+[[nodiscard]] AVRational FormatContext::getAudioTimebase() const noexcept
+{
+    if (m_audio_stream >= 0)
+        return m_format_ctx->streams[m_audio_stream]->time_base;
+    else 
+        return {};
+}

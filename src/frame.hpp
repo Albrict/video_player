@@ -38,6 +38,12 @@ namespace VP {
         
         [[nodiscard]] virtual uint8_t **getFrameData() const noexcept final 
         { return m_frame->data; }
+
+        [[nodiscard]] virtual int64_t getPts() const noexcept final 
+        { return m_frame->pts; }
+        [[nodiscard]] virtual int64_t getDts() const noexcept final
+        { return m_frame->pkt_dts; }
+
     protected: 
         AVFrame *m_frame {}; 
     };
