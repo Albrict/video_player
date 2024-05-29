@@ -1,5 +1,6 @@
 #include "audio_frame_handler.hpp"
 #include "error.hpp"
+#include "packet.hpp"
 #include "swr_context.hpp"
 
 extern "C" {
@@ -36,9 +37,10 @@ AudioFrameHandler::~AudioFrameHandler()
 
 void AudioFrameHandler::playFrame(Packet &packet)
 {
-
     m_audio_codec.sendPacket(packet);
     while (m_audio_codec.receiveFrame(m_audio_frame) >= 0) {
+        auto audio_clock = av_q2d(m_audio_timebase) * packet.getAVPacket().pts;
+        std::cout << "Audio clock " << audio_clock << '\n';
         int linesize          = 0;
         const int delay       = m_swr_context.getDelay(m_audio_frame) + m_audio_frame.getNumberOfSamples();
         int dst_samples       = m_audio_frame.getChannels();

@@ -1,5 +1,6 @@
 #pragma once
 #include "def.hpp"
+#include <cstdint>
 #include <utility>
 
 struct AVCodecContext;
@@ -23,6 +24,7 @@ namespace VP {
         { return m_codec_ctx; }
         [[nodiscard]] virtual AVCodecContext *getAVCodecContext() noexcept final
         { return m_codec_ctx; }
+        [[nodiscard]] virtual int64_t guess_correct_pts(const int64_t reordered_pts, int64_t dts) const noexcept final;
 
         CodecContext(const CodecContext &other) = delete;
         CodecContext &operator=(const CodecContext &rhs) = delete;
