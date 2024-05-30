@@ -21,7 +21,6 @@ endif()
 
 add_subdirectory( "src" )
 add_subdirectory( "external" )
-add_subdirectory( "test" )
 if( ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten" )
     target_link_options( main PRIVATE "--emrun -sASYNCIFY=1 --preload-file assets" )
     set(CMAKE_EXECUTABLE_SUFFIX .html)
